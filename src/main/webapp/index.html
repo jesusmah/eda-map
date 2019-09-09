@@ -26,7 +26,7 @@ var map = new mapboxgl.Map({
 var url = 'https://wanderdrone.appspot.com/';
 map.on('load', function () {
     window.setInterval(function() {
-        map.getSource('drone').setData(url);
+        map.getSource('container').setData(url);
     }, 2000);
 
     map.loadImage('https://ibm-cloud-architecture.github.io/refarch-kc/images/reefer.png', function(error, image) {
@@ -34,14 +34,51 @@ map.on('load', function () {
         map.addImage('container', image);
     });
 
-    map.addSource('drone', { type: 'geojson', data: url });
+    map.addSource('container', { type: 'geojson', data: url });
     map.addLayer({
-        "id": "drone",
+        "id": "container",
         "type": "symbol",
-        "source": "drone",
+        "source": "container",
         "layout": {
             "icon-image": "container",
             "icon-size": 0.1
+        }
+    });
+    map.addSource('ports', {
+        type: 'geojson',
+        data: {
+            "type": "FeatureCollection",
+            "features": [{
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [-77.03238901390978, 38.913188059745586]
+                },
+                "properties": {
+                    "title": "DC",
+                }
+                }, {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [-122.414, 37.776]
+                },
+                "properties": {
+                    "title": "SF",
+                }
+            }]
+        }
+    });
+    map.addLayer({
+        "id": "ports",
+        "type": "symbol",
+        "source": "ports",
+        "layout": {
+            "icon-image": "harbor-15",
+            "text-field": "{title}",
+            "text-font": ["Open Sans Semibold"],
+            "text-offset": [0, 0.6],
+            "text-anchor": "top"
         }
     });
 });
